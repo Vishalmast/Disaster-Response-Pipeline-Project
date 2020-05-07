@@ -1,5 +1,11 @@
 # Disaster Response Pipeline Project
 
+###Contents:
+    Instructions
+    Installation
+    File Description
+
+
 ### Instructions:
 1. Run the following commands in the project's root directory to set up your database and model.
 
@@ -12,3 +18,17 @@
     `python run.py`
 
 3. Go to http://0.0.0.0:3001/
+
+### Installations
+    Conda distribution distribution Python 3.x
+    Microsoft Excel
+    Flask
+    
+###File Description
+    messages_categories.csv: contains all messages data
+    disaster_categories.csv: contains categories data
+    DisasterResponse.db: It contains the cleaned and merged data of messages and categories
+    process_data.py: contains python codes to clean and merge the data. This data is stored in DisasterResponse.db
+    train_classifier.py: This will create and evaluate models required
+    run.py: Webapp's frontend codes
+    
