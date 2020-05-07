@@ -1,4 +1,5 @@
 # import libraries
+import sys
 import numpy as np
 import pandas as pd
 from sqlalchemy import create_engine
@@ -15,29 +16,41 @@ from sklearn.multioutput import MultiOutputClassifier
 import pickle
 nltk.download('punkt')
 nltk.download('wordnet')
-import sys
 
 
 def load_data(database_filepath):
-    # load data from database
+    '''
+    loads data from database
+    :param database_filepath: path of database file
+    :return: two dataframes X and y
+    '''
     engine = create_engine('sqlite:///{}'.format(database_filepath))
     df = pd.read_sql('SELECT * FROM disaster_response', engine)
     
     X = df.filter(items=['id', 'message', 'original', 'genre'])
     y = df.drop(['id', 'message', 'original', 'genre'], axis=1)
-    
-    #Mapping the '2' values in 'related' to '1' - because I consider them as a response (that is, '1')
+
+    # Mapping the '2' values in 'related' to '1' - because I consider them as a response (that is, '1')
     y['related']=y['related'].map(lambda x: 1 if x == 2 else x)
     
     return X, y
 
+
 def tokenize(text):
+    '''
+    converts the texts into tokens
+    :return: final set of words required for modelling
+    '''
     tokens = nltk.word_tokenize(text)
     lemmatizer = nltk.WordNetLemmatizer()
     return [lemmatizer.lemmatize(w).lower().strip() for w in tokens]
 
 
 def build_model(X_train, X_test, y_train, y_test):
+    '''
+    builds pipeline model
+    :return: final model
+    '''
     pipeline = Pipeline([('cvect', CountVectorizer(tokenizer = tokenize)),
                      ('tfidf', TfidfTransformer()),
                      ('clf', RandomForestClassifier())
@@ -58,12 +71,16 @@ def build_model(X_train, X_test, y_train, y_test):
                      ('tfidf', TfidfTransformer()),
                      ('clf', RandomForestClassifier(max_depth = li[0], min_samples_leaf = li[1], min_samples_split = li[2], n_estimators = li[3]))
                      ])
-    #X_train, X_test, y_train, y_test = train_test_split(X, y)
-    #pipeline.fit(X_train['message'], y_train)
+
     return pipeline
 
 
 def evaluate_model(pipeline, X_train, X_test, y_train, y_test, y):
+    '''
+
+    :param pipeline: model that will be used to predict values
+    :param y: required prediction
+    '''
     y_pred_test = pipeline.predict(X_test['message'])
     y_pred_train = pipeline.predict(X_train['message'])
     print(classification_report(y_test.values, y_pred_test, target_names=y.columns.values))
@@ -72,6 +89,11 @@ def evaluate_model(pipeline, X_train, X_test, y_train, y_test, y):
 
 
 def save_model(model, model_filepath):
+    '''
+
+    :param model: model created before
+    :param model_filepath: the model will be saved here
+    '''
     with open(model_filepath, 'wb') as file:
         pickle.dump(model, file)
     

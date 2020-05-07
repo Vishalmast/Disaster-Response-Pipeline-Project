@@ -4,8 +4,14 @@ import pandas as pd
 from sqlalchemy import create_engine
 
 
-
 def load_data(messages_filepath, categories_filepath):
+    """
+
+    :param messages_filepath:  contains the path of disaster_messages.csv
+    :param categories_filepath: contains the path of disaster_categories.csv
+    :return: Dataframe with the above mentioned files merged
+    """
+
     # load messages dataset
     messages = pd.read_csv(messages_filepath)
     
@@ -16,9 +22,13 @@ def load_data(messages_filepath, categories_filepath):
     df = messages.merge(categories, on='id')
     return df
 
-def clean_data(df):
 
-   
+def clean_data(df):
+    """
+
+    :param df: merged dataframe
+    :return: cleaned dataframe with same name 'df'
+    """
     # create a dataframe of the 36 individual category columns
     categories = df['categories'].str.split(';', expand=True)
     
@@ -32,8 +42,8 @@ def clean_data(df):
     
     # rename the columns of `categories`
     categories.columns = category_colnames
-    
-    #Reducing the value to only 0 and 1
+
+    # Reducing the value to only 0 and 1
     for column in categories:
         # set each value to be the last character of the string
         categories[column] = categories[column].astype(str).str[-1:]
@@ -50,7 +60,12 @@ def clean_data(df):
 
     return df
 
+
 def save_data(df, database_filename):
+    '''
+
+    :param df: merged dataframe
+    '''
     engine = create_engine('sqlite:///{}'.format(database_filename))
     df.to_sql('disaster_response', engine, index=False)
 
