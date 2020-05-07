@@ -25,10 +25,10 @@
     Flask
     
 ###File Description
-    messages_categories.csv: contains all messages data
-    disaster_categories.csv: contains categories data
-    DisasterResponse.db: It contains the cleaned and merged data of messages and categories
-    process_data.py: contains python codes to clean and merge the data. This data is stored in DisasterResponse.db
-    train_classifier.py: This will create and evaluate models required
-    run.py: Webapp's frontend codes
+    messages_categories.csv: contains all messages data <br>
+    disaster_categories.csv: contains categories data <br>
+    DisasterResponse.db: It contains the cleaned and merged data of messages and categories <br>
+    process_data.py: contains python codes to clean and merge the data. This data is stored in DisasterResponse.db <br>
+    train_classifier.py: This will create and evaluate models required <br>
+    run.py: Webapp's frontend codes 
     
