@@ -24,7 +24,7 @@
     Microsoft Excel
     Flask
     
-###File Description
+###File Description<br>
     messages_categories.csv: contains all messages data <br>
     disaster_categories.csv: contains categories data <br>
     DisasterResponse.db: It contains the cleaned and merged data of messages and categories <br>
