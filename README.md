@@ -1,9 +1,9 @@
 # Disaster Response Pipeline Project
 
-###Contents:
-    Instructions
-    Installation
-    File Description
+###Contents:<br>
+    Instructions<br>
+    Installation<br>
+    File Description<br>
 
 
 ### Instructions:
