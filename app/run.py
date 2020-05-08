@@ -2,12 +2,16 @@ import json
 import plotly
 import pandas as pd
 
+
+from plotly.graph_objs import Bar
+from plotly.graph_objs import Heatmap
+
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
 
 from flask import Flask
 from flask import render_template, request, jsonify
-from plotly.graph_objs import Bar
+from plotly.graph_objs import Bar, Scatter
 from sklearn.externals import joblib
 from sqlalchemy import create_engine
 
@@ -44,6 +48,11 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+    y = df.drop(['id', 'message', 'original', 'genre'], axis=1).astype(float)
+    cat_names = y.columns.values
+    cat_counts = [sum(y[x]) for x in cat_names]
+    corr = y.corr()
+    labels = y.columns.values
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
@@ -66,8 +75,41 @@ def index():
                 }
             }
         }
+    ,
+             {
+                 'data': [
+                     Scatter(
+                         x=cat_names,
+                         y=cat_counts
+                     )
+                 ],
+
+                 'layout': {
+                     'title': 'Distribution of Message categories',
+                     'yaxis': {
+                         'title': "Count"
+                     },
+                     'xaxis': {
+                         'title': "Genre"
+                     }
+                 }
+             },
+             {
+                 'data': [
+                     Heatmap(
+                         z=corr.values,
+                         x=labels,
+                         y=labels
+                     )
+                 ],
+
+                 'layout': {
+                     'title': 'Categories Correlation',
+                     'height': 800
+                 }
+             }
     ]
-    
+
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
     graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
